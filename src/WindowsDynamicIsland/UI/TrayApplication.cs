@@ -42,7 +42,14 @@ public sealed class TrayApplication : IDisposable
         _mixer.SourceInitialized += (_, _) =>
         {
             var source = System.Windows.Interop.HwndSource.FromHwnd(new System.Windows.Interop.WindowInteropHelper(_mixer).Handle);
-            if (source is not null) _hotKey.Register(source);
+            if (source is not null)
+            {
+                try { _hotKey.Register(source); }
+                catch (InvalidOperationException ex)
+                {
+                    _icon.ShowBalloonTip(3500, "Atalho indisponível", ex.Message, ToolTipIcon.Warning);
+                }
+            }
         };
         _mixer.Show();
         _mixer.Hide();
@@ -53,8 +60,13 @@ public sealed class TrayApplication : IDisposable
 
     private void ToggleMixer()
     {
-        if (_mixer.IsVisible) _mixer.Hide();
-        else { _mixer.Show(); _mixer.Activate(); }
+        if (_mixer.IsVisible) { _mixer.Hide(); return; }
+
+        var workArea = SystemParameters.WorkArea;
+        _mixer.Left = workArea.Right - _mixer.Width - 16;
+        _mixer.Top = workArea.Bottom - _mixer.Height - 16;
+        _mixer.Show();
+        _mixer.Activate();
     }
 
     public void Dispose()
