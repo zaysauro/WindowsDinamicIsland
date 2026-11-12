@@ -1,4 +1,3 @@
-using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using WindowsDynamicIsland.Audio;
 using WindowsDynamicIsland.Core;
@@ -7,12 +6,12 @@ using WindowsDynamicIsland.UI;
 
 namespace WindowsDynamicIsland;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private ServiceProvider? _services;
     private TrayApplication? _tray;
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(System.Windows.StartupEventArgs e)
     {
         base.OnStartup(e);
 
@@ -29,7 +28,7 @@ public partial class App : Application
         _tray.Start();
     }
 
-    protected override void OnExit(ExitEventArgs e)
+    protected override void OnExit(System.Windows.ExitEventArgs e)
     {
         _tray?.Dispose();
         _services?.Dispose();
