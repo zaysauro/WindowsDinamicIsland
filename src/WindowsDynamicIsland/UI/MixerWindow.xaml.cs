@@ -14,6 +14,7 @@ public partial class MixerWindow : Window
     private readonly DispatcherTimer _refreshTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     private readonly ObservableCollection<SessionRow> _sessions = new();
     private bool _updatingMaster;
+    private bool _updatingMicrophone;
 
     public MixerWindow(IAudioMixerService audio)
     {
@@ -38,6 +39,21 @@ public partial class MixerWindow : Window
             MasterVolumeSlider.Value = _audio.GetMasterVolume() * 100;
             MasterMuteButton.Content = _audio.GetMasterMute() ? "Ativar som" : "Mudo";
             _updatingMaster = false;
+
+            try
+            {
+                _updatingMicrophone = true;
+                MicrophoneVolumeSlider.Value = _audio.GetMicrophoneVolume() * 100;
+                MicrophoneMuteButton.Content = _audio.GetMicrophoneMute() ? "Ativar mic." : "Mudo";
+                MicrophoneControls.Visibility = Visibility.Visible;
+                NoMicrophoneState.Visibility = Visibility.Collapsed;
+            }
+            catch
+            {
+                MicrophoneControls.Visibility = Visibility.Collapsed;
+                NoMicrophoneState.Visibility = Visibility.Visible;
+            }
+            finally { _updatingMicrophone = false; }
 
             var current = _audio.GetSessions();
             var byPid = current.GroupBy(s => s.ProcessId).ToDictionary(g => g.Key, g => g.First());
@@ -74,6 +90,25 @@ public partial class MixerWindow : Window
     {
         _audio.SetMasterMute(!_audio.GetMasterMute());
         MasterMuteButton.Content = _audio.GetMasterMute() ? "Ativar som" : "Mudo";
+    }
+
+    private void MicrophoneVolume_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (!_updatingMicrophone && IsLoaded)
+        {
+            try { _audio.SetMicrophoneVolume((float)(e.NewValue / 100)); }
+            catch { /* A capture endpoint may be disconnected while dragging. */ }
+        }
+    }
+
+    private void MicrophoneMute_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            _audio.SetMicrophoneMute(!_audio.GetMicrophoneMute());
+            MicrophoneMuteButton.Content = _audio.GetMicrophoneMute() ? "Ativar mic." : "Mudo";
+        }
+        catch { NoMicrophoneState.Visibility = Visibility.Visible; }
     }
 
     private void SessionMute_Click(object sender, RoutedEventArgs e)
