@@ -42,7 +42,11 @@
      </ItemsControl>
      <TextBlock x:Name="EmptyState" Text="Nenhuma sessão de áudio ativa." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,20"/>
      <TextBlock Text="MICROFONE" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,18,0,8"/>
-     <TextBlock Text="O controle de microfone e a seleção do dispositivo serão habilitados na próxima etapa." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+     <DockPanel x:Name="MicrophoneControls" Margin="0,0,0,8">
+      <Button x:Name="MicrophoneMuteButton" Content="Mudo" DockPanel.Dock="Right" Click="MicrophoneMute_Click"/>
+      <Slider x:Name="MicrophoneVolumeSlider" Minimum="0" Maximum="100" ValueChanged="MicrophoneVolume_Changed" VerticalAlignment="Center"/>
+     </DockPanel>
+     <TextBlock x:Name="NoMicrophoneState" Text="Nenhum microfone padrão disponível." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Visibility="Collapsed"/>
     </StackPanel>
    </ScrollViewer>
    <TextBlock DockPanel.Dock="Bottom" Text="Ctrl + Alt + V  ·  Ocultar" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,16,0,0"/>
