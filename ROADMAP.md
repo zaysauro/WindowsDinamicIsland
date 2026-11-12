@@ -22,7 +22,7 @@
 ## Stage 3 — Dynamic Island
 - [x] Collapsed and expanded island states
 - [x] Fullscreen/borderless auto-hide
-- [ ] Caps Lock and Num Lock notifications
+- [x] Caps Lock and Num Lock notifications
 - [x] Event-driven master volume notifications in Dynamic Island (WASAPI endpoint callback)
 - [ ] Multi-monitor placement and DPI-aware positioning
 
