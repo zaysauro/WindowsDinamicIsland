@@ -41,7 +41,7 @@ public sealed class TrayApplication : IDisposable
     {
         _mixer.SourceInitialized += (_, _) =>
         {
-            var source = System.Windows.Interop.HwndSource.FromVisual(_mixer);
+            var source = System.Windows.Interop.HwndSource.FromHwnd(new System.Windows.Interop.WindowInteropHelper(_mixer).Handle);
             if (source is not null) _hotKey.Register(source);
         };
         _mixer.Show();
