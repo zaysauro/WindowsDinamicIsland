@@ -1,0 +1,14 @@
+<Window x:Class="WindowsDynamicIsland.UI.DynamicIslandWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Width="190" Height="38" WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+ ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize" ShowActivated="False">
+ <Border x:Name="IslandShell" Background="#08090C" CornerRadius="22" BorderBrush="#282B33" BorderThickness="1" Padding="14,7"
+         MouseEnter="Island_MouseEnter" MouseLeave="Island_MouseLeave" MouseLeftButtonUp="Island_Click">
+  <Grid>
+   <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <Ellipse Width="7" Height="7" Fill="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
+   <TextBlock x:Name="IslandStatus" Grid.Column="1" Text="Dynamic Island" Foreground="White" FontSize="11" Margin="9,0,0,0" VerticalAlignment="Center"/>
+  </Grid>
+ </Border>
+</Window>

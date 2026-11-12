@@ -1,0 +1,33 @@
+<Window x:Class="WindowsDynamicIsland.UI.MixerWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Mixer" Width="390" Height="560" WindowStyle="None" AllowsTransparency="True"
+ Background="Transparent" ShowInTaskbar="False" Topmost="True" ResizeMode="NoResize"
+ Deactivated="Window_Deactivated">
+ <Border Background="{StaticResource SurfaceBrush}" CornerRadius="18" Padding="20" BorderBrush="#343944" BorderThickness="1">
+  <DockPanel>
+   <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+    <DockPanel>
+     <TextBlock Text="AUDIO MIXER" Foreground="{StaticResource MutedBrush}" FontSize="11" FontWeight="SemiBold"/>
+     <Button Content="×" Width="28" Height="26" Padding="0" DockPanel.Dock="Right" Click="Close_Click"/>
+    </DockPanel>
+    <TextBlock Text="Controle de áudio" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="SemiBold" Margin="0,8,0,0"/>
+   </StackPanel>
+   <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+     <TextBlock Text="SAÍDA DO SISTEMA" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,4,0,8"/>
+     <DockPanel Margin="0,0,0,16">
+      <Button x:Name="MasterMuteButton" Content="Mudo" DockPanel.Dock="Right" Click="MasterMute_Click"/>
+      <Slider x:Name="MasterVolumeSlider" Minimum="0" Maximum="100" ValueChanged="MasterVolume_Changed" VerticalAlignment="Center"/>
+     </DockPanel>
+     <TextBlock Text="APLICATIVOS" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,0,0,8"/>
+     <ItemsControl x:Name="SessionsList"/>
+     <TextBlock x:Name="EmptyState" Text="Nenhuma sessão de áudio ativa." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,20"/>
+     <TextBlock Text="MICROFONE" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,18,0,8"/>
+     <TextBlock Text="O controle de microfone e a seleção do dispositivo serão habilitados na próxima etapa." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+    </StackPanel>
+   </ScrollViewer>
+   <TextBlock DockPanel.Dock="Bottom" Text="Ctrl + Alt + V  ·  Ocultar" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,16,0,0"/>
+  </DockPanel>
+ </Border>
+</Window>
