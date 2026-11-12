@@ -5,17 +5,35 @@ on:
     branches: [main, "feat/**"]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
       - name: Restore
-        run: dotnet restore .\WindowsDynamicIsland.sln
+        run: dotnet restore .\\WindowsDynamicIsland.sln
+
       - name: Build
-        run: dotnet build .\WindowsDynamicIsland.sln --configuration Release --no-restore
+        run: dotnet build .\\WindowsDynamicIsland.sln --configuration Release --no-restore
+
+      - name: Publish standalone Windows x64 executable
+        run: dotnet publish .\\src\\WindowsDynamicIsland\\WindowsDynamicIsland.csproj --configuration Release --runtime win-x64 --self-contained true --no-restore -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output .\\artifacts\\WindowsDynamicIsland
+
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: WindowsDynamicIsland-win-x64
+          path: .\\artifacts\\WindowsDynamicIsland\\
+          if-no-files-found: error
+          retention-days: 30
