@@ -81,5 +81,26 @@ public sealed class AudioMixerService : IAudioMixerService, IDisposable
         device.AudioEndpointVolume.Mute = muted;
     }
 
+    public float GetMicrophoneVolume()
+    {
+        using var device = _enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications);
+        return device.AudioEndpointVolume.MasterVolumeLevelScalar;
+    }
+    public void SetMicrophoneVolume(float volume)
+    {
+        using var device = _enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications);
+        device.AudioEndpointVolume.MasterVolumeLevelScalar = Math.Clamp(volume, 0f, 1f);
+    }
+    public bool GetMicrophoneMute()
+    {
+        using var device = _enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications);
+        return device.AudioEndpointVolume.Mute;
+    }
+    public void SetMicrophoneMute(bool muted)
+    {
+        using var device = _enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications);
+        device.AudioEndpointVolume.Mute = muted;
+    }
+
     public void Dispose() => _enumerator.Dispose();
 }
