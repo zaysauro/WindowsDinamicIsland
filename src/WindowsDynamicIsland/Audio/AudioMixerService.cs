@@ -7,6 +7,31 @@ public sealed class AudioMixerService : IAudioMixerService, IDisposable
 {
     private readonly MMDeviceEnumerator _enumerator = new();
     private readonly object _gate = new();
+    private MMDevice? _monitoredRenderDevice;
+
+    public event EventHandler<MasterVolumeChangedEventArgs>? MasterVolumeChanged;
+
+    public AudioMixerService() => TryStartMasterVolumeNotifications();
+
+    private void TryStartMasterVolumeNotifications()
+    {
+        try
+        {
+            _monitoredRenderDevice = _enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            _monitoredRenderDevice.AudioEndpointVolume.OnVolumeNotification += OnMasterVolumeNotification;
+        }
+        catch
+        {
+            _monitoredRenderDevice?.Dispose();
+            _monitoredRenderDevice = null;
+            // Audio devices can be unavailable during startup; the mixer remains usable when one appears.
+        }
+    }
+
+    private void OnMasterVolumeNotification(object? sender, AudioVolumeNotificationEventArgs e)
+    {
+        MasterVolumeChanged?.Invoke(this, new MasterVolumeChangedEventArgs(e.MasterVolume, e.Muted));
+    }
 
     public IReadOnlyList<AudioSessionInfo> GetSessions()
     {
@@ -102,5 +127,14 @@ public sealed class AudioMixerService : IAudioMixerService, IDisposable
         device.AudioEndpointVolume.Mute = muted;
     }
 
-    public void Dispose() => _enumerator.Dispose();
+    public void Dispose()
+    {
+        if (_monitoredRenderDevice is not null)
+        {
+            _monitoredRenderDevice.AudioEndpointVolume.OnVolumeNotification -= OnMasterVolumeNotification;
+            _monitoredRenderDevice.Dispose();
+            _monitoredRenderDevice = null;
+        }
+        _enumerator.Dispose();
+    }
 }
