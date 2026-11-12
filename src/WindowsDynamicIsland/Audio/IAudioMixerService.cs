@@ -2,6 +2,7 @@ namespace WindowsDynamicIsland.Audio;
 
 public interface IAudioMixerService
 {
+    event EventHandler<MasterVolumeChangedEventArgs>? MasterVolumeChanged;
     IReadOnlyList<AudioSessionInfo> GetSessions();
     void SetSessionVolume(uint processId, float volume);
     void SetSessionMute(uint processId, bool muted);
