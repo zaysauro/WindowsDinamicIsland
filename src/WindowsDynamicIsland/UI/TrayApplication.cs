@@ -23,7 +23,7 @@ public sealed class TrayApplication : IDisposable
         _fullscreen = fullscreen;
         _icon = new NotifyIcon
         {
-            Icon = SystemIcons.Volume,
+            Icon = SystemIcons.Application,
             Text = "Windows Dynamic Island",
             Visible = true,
             ContextMenuStrip = new ContextMenuStrip()
@@ -32,7 +32,7 @@ public sealed class TrayApplication : IDisposable
         _icon.ContextMenuStrip.Items.Add("Mostrar Dynamic Island", null, (_, _) => _island.Show());
         _icon.ContextMenuStrip.Items.Add("Configurações", null, (_, _) => _mixer.ShowSettingsPlaceholder());
         _icon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
-        _icon.ContextMenuStrip.Items.Add("Sair", null, (_, _) => Application.Current.Shutdown());
+        _icon.ContextMenuStrip.Items.Add("Sair", null, (_, _) => System.Windows.Application.Current.Shutdown());
         _icon.MouseClick += (_, e) => { if (e.Button == MouseButtons.Left) ToggleMixer(); };
         _hotKey.Pressed += (_, _) => ToggleMixer();
     }
