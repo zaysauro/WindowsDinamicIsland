@@ -9,4 +9,8 @@ public interface IAudioMixerService
     void SetMasterVolume(float volume);
     bool GetMasterMute();
     void SetMasterMute(bool muted);
+    float GetMicrophoneVolume();
+    void SetMicrophoneVolume(float volume);
+    bool GetMicrophoneMute();
+    void SetMicrophoneMute(bool muted);
 }
