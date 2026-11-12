@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
+using WindowsDynamicIsland.Audio;
 using WindowsDynamicIsland.Core;
 using WindowsDynamicIsland.Services;
 
@@ -13,14 +14,17 @@ public sealed class TrayApplication : IDisposable
     private readonly DynamicIslandWindow _island;
     private readonly GlobalHotKeyService _hotKey;
     private readonly FullscreenDetector _fullscreen;
+    private readonly IAudioMixerService _audio;
     private bool _disposed;
 
-    public TrayApplication(MixerWindow mixer, DynamicIslandWindow island, GlobalHotKeyService hotKey, FullscreenDetector fullscreen)
+    public TrayApplication(MixerWindow mixer, DynamicIslandWindow island, GlobalHotKeyService hotKey, FullscreenDetector fullscreen, IAudioMixerService audio)
     {
         _mixer = mixer;
         _island = island;
         _hotKey = hotKey;
         _fullscreen = fullscreen;
+        _audio = audio;
+        _audio.MasterVolumeChanged += OnMasterVolumeChanged;
         _icon = new NotifyIcon
         {
             Icon = SystemIcons.Application,
@@ -35,6 +39,16 @@ public sealed class TrayApplication : IDisposable
         _icon.ContextMenuStrip.Items.Add("Sair", null, (_, _) => System.Windows.Application.Current.Shutdown());
         _icon.MouseClick += (_, e) => { if (e.Button == MouseButtons.Left) ToggleMixer(); };
         _hotKey.Pressed += (_, _) => ToggleMixer();
+    }
+
+    private void OnMasterVolumeChanged(object? sender, MasterVolumeChangedEventArgs e)
+    {
+        if (_disposed) return;
+        _island.Dispatcher.BeginInvoke(() =>
+        {
+            if (!_disposed && _island.IsVisible)
+                _island.ShowVolumeNotification(e.Volume, e.IsMuted);
+        });
     }
 
     public void Start()
@@ -73,6 +87,7 @@ public sealed class TrayApplication : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
+        _audio.MasterVolumeChanged -= OnMasterVolumeChanged;
         _fullscreen.Dispose();
         _hotKey.Dispose();
         _icon.Visible = false;
