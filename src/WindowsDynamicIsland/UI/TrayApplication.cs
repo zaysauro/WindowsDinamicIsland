@@ -44,11 +44,11 @@ public sealed class TrayApplication : IDisposable
     private void OnMasterVolumeChanged(object? sender, MasterVolumeChangedEventArgs e)
     {
         if (_disposed) return;
-        _island.Dispatcher.BeginInvoke(() =>
+        _island.Dispatcher.BeginInvoke(new Action(() =>
         {
             if (!_disposed && _island.IsVisible)
                 _island.ShowVolumeNotification(e.Volume, e.IsMuted);
-        });
+        }));
     }
 
     public void Start()
