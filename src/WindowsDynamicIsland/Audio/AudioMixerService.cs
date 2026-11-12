@@ -28,9 +28,9 @@ public sealed class AudioMixerService : IAudioMixerService, IDisposable
         }
     }
 
-    private void OnMasterVolumeNotification(object? sender, AudioVolumeNotificationEventArgs e)
+    private void OnMasterVolumeNotification(AudioVolumeNotificationData data)
     {
-        MasterVolumeChanged?.Invoke(this, new MasterVolumeChangedEventArgs(e.MasterVolume, e.Muted));
+        MasterVolumeChanged?.Invoke(this, new MasterVolumeChangedEventArgs(data.MasterVolume, data.Muted));
     }
 
     public IReadOnlyList<AudioSessionInfo> GetSessions()
