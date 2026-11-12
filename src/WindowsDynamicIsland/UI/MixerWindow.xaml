@@ -21,7 +21,25 @@
       <Slider x:Name="MasterVolumeSlider" Minimum="0" Maximum="100" ValueChanged="MasterVolume_Changed" VerticalAlignment="Center"/>
      </DockPanel>
      <TextBlock Text="APLICATIVOS" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,0,0,8"/>
-     <ItemsControl x:Name="SessionsList"/>
+     <ItemsControl x:Name="SessionsList">
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <Border Background="{StaticResource SurfaceRaisedBrush}" CornerRadius="10" Padding="12" Margin="0,0,0,8">
+         <StackPanel>
+          <DockPanel Margin="0,0,0,7">
+           <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+           <Button Content="{Binding MuteLabel}" Tag="{Binding}" DockPanel.Dock="Right" Padding="8,3" Margin="8,0,0,0" Click="SessionMute_Click"/>
+          </DockPanel>
+          <DockPanel>
+           <Slider Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+           <TextBlock Text="{Binding Volume, StringFormat={}{0:0}%}" Foreground="{StaticResource MutedBrush}" Width="42" TextAlignment="Right" VerticalAlignment="Center"/>
+          </DockPanel>
+          <ProgressBar Minimum="0" Maximum="100" Value="{Binding Peak}" Height="3" Margin="0,5,0,0" Background="#343944" Foreground="{StaticResource AccentBrush}"/>
+         </StackPanel>
+        </Border>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>
      <TextBlock x:Name="EmptyState" Text="Nenhuma sessão de áudio ativa." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,20"/>
      <TextBlock Text="MICROFONE" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,18,0,8"/>
      <TextBlock Text="O controle de microfone e a seleção do dispositivo serão habilitados na próxima etapa." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
